@@ -1,0 +1,8 @@
+@charset "UTF-8";
+header {
+	height: 70px;
+	background-color:#52BEE0;
+}
+.contents {
+	min-height: 600px;
+}
