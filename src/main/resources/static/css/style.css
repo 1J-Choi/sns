@@ -6,3 +6,6 @@ header {
 .contents {
 	min-height: 600px;
 }
+.formBox {
+	background-color: #F2F2F2;
+}
