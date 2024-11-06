@@ -14,6 +14,7 @@ import com.sns.common.EncryptUtills;
 import com.sns.user.bo.UserBO;
 import com.sns.user.entity.UserEntity;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -71,6 +72,13 @@ public class UserRestController {
 		return result;
 	}
 	
+	/**
+	 * 로그인
+	 * @param loginId
+	 * @param password
+	 * @param request
+	 * @return
+	 */
 	@PostMapping("/sign-in")
 	public Map<String, Object> signIn(
 			@RequestParam("loginId") String loginId,

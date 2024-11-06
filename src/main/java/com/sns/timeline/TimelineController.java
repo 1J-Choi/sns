@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import com.sns.post.bo.PostBO;
 import com.sns.post.entity.PostEntity;
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 @Controller
 public class TimelineController {
 	@Autowired
