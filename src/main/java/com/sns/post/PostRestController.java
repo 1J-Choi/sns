@@ -33,6 +33,7 @@ public class PostRestController {
 			@RequestParam("file") MultipartFile file,
 			HttpSession session
 			) {
+<<<<<<< HEAD
 		// db 등록 및 이미지 저장을 위한 userId, userLoginId 받기
 		Integer userId = (Integer) session.getAttribute("userId");
 		String userLoginId = (String) session.getAttribute("userLoginId");
@@ -41,11 +42,26 @@ public class PostRestController {
 		Map<String, Object> result = new HashMap<>();
 		// userId가 있는지 확인
 		if(userId == null) {
+=======
+		// userId 검증후 return 하기 위해 result를 미리 선언한다.
+		Map<String, Object> result = new HashMap<>();
+		
+		// session이 있는지 확인
+		if(session == null) {
+>>>>>>> f62e4da405f566e774252d85eeb5d269aef36a63
 			result.put("code", 401);
 			result.put("error_message", "로그인한 유저만 글을 게시할 수 있습니다.");
 			return result;
 		}
+<<<<<<< HEAD
 
+=======
+		
+		// db 등록 및 이미지 저장을 위한 userId, userLoginId 받기
+		int userId = (int) session.getAttribute("userId");
+		String userLoginId = (String) session.getAttribute("userLoginId");
+		
+>>>>>>> f62e4da405f566e774252d85eeb5d269aef36a63
 		// db insert
 		PostEntity post = postBO.addPost(userId, userLoginId, content, file);
 		
