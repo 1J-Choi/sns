@@ -46,8 +46,9 @@
 				
 				<!-- 좋아요 -->
 				<div class="card-like m-3">
-					<a href="#" class="like-btn">
+					<a href="#" class="like-btn" th:data-post-id="${post.id}">
 						<img src="https://www.iconninja.com/files/214/518/441/heart-icon.png" width="18" height="18" alt="empty heart">
+						<img src="https://www.iconninja.com/files/527/809/128/heart-icon.png" width="18" height="18" alt="full heart" class="d-none">
 					</a>
 					<span>좋아요 13개</span>
 				</div>
@@ -66,20 +67,23 @@
 				<!-- 댓글 목록 -->
 				<div class="card-comment-list m-2">
 					<!-- 댓글들 -->
-					<div class="card-comment m-1">
-						<span class="font-weight-bold">댓글쓰니</span>
-						<span>댓글 내용임</span>
-						
-						<!-- 댓글 삭제(자신의 댓글만 가능) -->
-						<a href="#" class="comment-del-btn">
-							<img src="https://www.iconninja.com/files/603/22/506/x-icon.png" width="10" height="10">
-						</a>
-					</div>
+					<th:block th:each="comment : ${commentList}">
+						<div class="card-comment m-1" th:if="${comment.postId} == ${post.id}">
+							<span class="font-weight-bold" th:text="${comment.userId}">댓글쓰니</span>
+							<span th:text="${comment.content}">댓글 내용임</span>
+							
+							<!-- 댓글 삭제(자신의 댓글만 가능) -->
+							<a href="#" class="comment-del-btn" th:if="${comment.userId} == ${session.userId}"
+								th:data-comment-id="${comment.id}">
+								<img src="https://www.iconninja.com/files/603/22/506/x-icon.png" width="10" height="10">
+							</a>
+						</div>
+					</th:block>
 					
 					<!-- 댓글 쓰기 -->
 					<div class="comment-write d-flex border-top mt-2">
 						<input type="text" class="comment-input form-control border-0 mr-2" placeholder="댓글 달기">
-						<button type="button" class="comment-btn btn btn-light">게시</button>
+						<button type="button" class="comment-btn btn btn-light" th:data-post-id="${post.id}">게시</button>
 					</div>
 				</div> <!-- 댓글 끝 -->
 			</div> <!-- 카드 끝 -->
@@ -164,7 +168,65 @@
     					alert('글 게시에 실패하였습니다.');
     				}
     			});
-    		})
+    		});
+    		
+    		// 댓글 게시 버튼
+    		$('.comment-btn').on('click', function(e) {
+    			e.preventDefault();
+    			let postId = $(this).data('post-id');
+    			// alert(postId);
+    			let content = $(this).prev().val().trim();
+    			// $(this).siblings('input').val().trim 으로도 접근 가능
+    			// sibling('# 이나 . 도 가능')
+    			// alert(content);
+    			
+    			// validation
+    			if(!content) {
+    				alert('댓글을 입력하세요.');
+    				return;
+    			}
+    			
+    			// AJAX
+    			$.ajax({
+    				type:"POST"
+    				, url:"/comment/create"
+    				, data:{
+    					"content":content
+    					, "postId":postId
+    				}
+    				, success:function(data) {
+    					if(data.code == 200) {
+    						// 성공
+    						alert('댓글 등록 완료');
+    						location.href = location.href;
+    					} else if(data.code = 403) {
+    						// 비로그인
+    						alert(data.error_message);
+    						location.href = '/user/sign-in-view';
+    					} else {
+    						// 실패
+    						alert(data.error_message);
+    					}
+    				}
+    				, error:function(e) {
+    					alert('댓글 등록에 실패하였습니다.');
+    				}
+    			});
+    		});
+    		
+    		// 좋아요 버튼
+    		$('.like-btn').on('click', function(e) {
+    			e.preventDefault();
+    			let postId = $(this).data('post-id');
+    			// alert(postId);
+    		});
+    		
+    		// 댓글 삭제
+    		$('.comment-del-btn').on('click', function(e) {
+    			e.preventDefault();
+    			let commentId = $(this).data('comment-id');
+    			// alert(commentId);
+    		});
     	});
     </script>
 </th:block>
