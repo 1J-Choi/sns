@@ -28,25 +28,25 @@
 		<div class="timeline-box my-5">
 			
 			<!-- 글(카드) 반복 -->
-			<div class="card border rounded mt-3" th:each="post : ${postList}">
+			<div class="card border rounded mt-3" th:each="card : ${cardList}">
 				<!-- 글쓴이, 더보기(삭제) -->
 				<div class="p-2 d-flex justify-content-between">
-					<span class="font-weight-bold" th:text="${post.userId}">글쓴이</span>
+					<span class="font-weight-bold" th:text="${card.user.name}">글쓴이</span>
 					
 					<!-- 더보기 ...(로그인 된 사람과 글쓴이 정보 일치할 때 보이게) -->
-					<a href="#" class="more-btn" th:if="${session.userId} == ${post.userId}">
+					<a href="#" class="more-btn" th:if="${session.userId} == ${card.post.userId}">
 						<img src="https://www.iconninja.com/files/860/824/939/more-icon.png" width="30">
 					</a>
 				</div>
 				
 				<!-- 본문 이미지 -->
 				<div class="card-img">
-					<img th:src="${post.image}" class="w-100" alt="본문 이미지">
+					<img th:src="${card.post.image}" class="w-100" alt="본문 이미지">
 				</div>
 				
 				<!-- 좋아요 -->
 				<div class="card-like m-3">
-					<a href="#" class="like-btn" th:data-post-id="${post.id}">
+					<a href="#" class="like-btn" th:data-post-id="${card.post.id}">
 						<img src="https://www.iconninja.com/files/214/518/441/heart-icon.png" width="18" height="18" alt="empty heart">
 						<img src="https://www.iconninja.com/files/527/809/128/heart-icon.png" width="18" height="18" alt="full heart" class="d-none">
 					</a>
@@ -55,8 +55,8 @@
 				
 				<!-- 글 -->
 				<div class="card-post m-3">
-					<span class="font-weight-bold" th:text="${post.userId}">글쓴이</span>
-					<span th:text="${post.content}">글 내용입니다!!!!</span>
+					<span class="font-weight-bold" th:text="${card.user.name}">글쓴이</span>
+					<span th:text="${card.post.content}">글 내용입니다!!!!</span>
 				</div>
 				
 				<!-- 댓글 제목 -->
@@ -67,14 +67,13 @@
 				<!-- 댓글 목록 -->
 				<div class="card-comment-list m-2">
 					<!-- 댓글들 -->
-					<th:block th:each="comment : ${commentList}">
-						<div class="card-comment m-1" th:if="${comment.postId} == ${post.id}">
-							<span class="font-weight-bold" th:text="${comment.userId}">댓글쓰니</span>
-							<span th:text="${comment.content}">댓글 내용임</span>
+					<th:block th:each="commentDTO : ${card.commentDTOList}">
+						<div class="card-comment m-1">
+							<span class="font-weight-bold" th:text="${commentDTO.user.name}">댓글쓰니</span>
+							<span th:text="${commentDTO.comment.content}">댓글 내용임</span>
 							
 							<!-- 댓글 삭제(자신의 댓글만 가능) -->
-							<a href="#" class="comment-del-btn" th:if="${comment.userId} == ${session.userId}"
-								th:data-comment-id="${comment.id}">
+							<a href="#" class="comment-del-btn" th:if="${session.userId} == ${commentDTO.comment.userId}">
 								<img src="https://www.iconninja.com/files/603/22/506/x-icon.png" width="10" height="10">
 							</a>
 						</div>
@@ -83,7 +82,7 @@
 					<!-- 댓글 쓰기 -->
 					<div class="comment-write d-flex border-top mt-2">
 						<input type="text" class="comment-input form-control border-0 mr-2" placeholder="댓글 달기">
-						<button type="button" class="comment-btn btn btn-light" th:data-post-id="${post.id}">게시</button>
+						<button type="button" class="comment-btn btn btn-light" th:data-post-id="${card.post.id}">게시</button>
 					</div>
 				</div> <!-- 댓글 끝 -->
 			</div> <!-- 카드 끝 -->
