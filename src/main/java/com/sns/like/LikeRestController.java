@@ -27,16 +27,18 @@ public class LikeRestController {
 		Integer userId = (Integer)session.getAttribute("userId");
 		if (userId == null) {
 			result.put("code", 403);
-			result.put("error_message", "로그인이 되지 않은 사용자 입니다.");
+			result.put("error_message", "로그인이 된 사용자만 좋아요를 할 수 있습니다.");
 			return result;
 		}
 		
 		// toggle 요청 -> BO
-		String successMessage = likeBO.toggleLike(postId, userId);
+		// String successMessage = 
+		likeBO.toggleLike(postId, userId);
 		
 		// return
 		result.put("code", 200);
-		result.put("result", successMessage);
+		// result.put("result", successMessage);
+		result.put("result", "성공");
 		return result;
 	}
 }

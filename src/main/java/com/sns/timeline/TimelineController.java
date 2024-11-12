@@ -26,7 +26,11 @@ public class TimelineController {
 	@GetMapping("/timeline")
 	public String timeline(Model model, 
 			HttpSession session) {
-		List<CardDTO> cardList = timelineBO.generateCardList((int) session.getAttribute("userId"));
+		Integer userId = (Integer) session.getAttribute("userId");
+		if(userId == null) { // 비로그인 시
+			userId = 0; // 존재하지 않는 userId인 0으로 setting
+		}
+		List<CardDTO> cardList = timelineBO.generateCardList(userId);
 		model.addAttribute("cardList", cardList);
 		
 		return "timeline/timeline";

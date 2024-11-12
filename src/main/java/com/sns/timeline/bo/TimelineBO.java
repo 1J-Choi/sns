@@ -25,7 +25,7 @@ public class TimelineBO {
 	
 	// input: X
 	// output: List<CardDTO>
-	public List<CardDTO> generateCardList(int userId) {
+	public List<CardDTO> generateCardList(Integer userId) {
 		List<CardDTO> cardList = new ArrayList<>();
 		
 		// 글 목록 가져옴

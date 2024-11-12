@@ -48,10 +48,11 @@
 				<div class="card-like m-3">
 					<a href="#" class="like-btn" th:data-post-id="${card.post.id}">
 						<img src="https://www.iconninja.com/files/214/518/441/heart-icon.png" width="18" height="18" alt="empty heart" th:unless="${card.filledLike}">
-						<img src="https://www.iconninja.com/files/527/809/128/heart-icon.png" width="18" height="18" alt="full heart" th:if="${card.filledLike}">
+						<img src="https://www.iconninja.com/files/527/809/128/heart-icon.png" width="18" height="18" alt="filled heart" th:if="${card.filledLike}">
 					</a>
-					<span th:text="${card.likeCount}">좋아요</span>
+					<span th:text="|좋아요 ${card.likeCount}개|">좋아요</span>
 				</div>
+				
 				
 				<!-- 글 -->
 				<div class="card-post m-3">
@@ -218,12 +219,12 @@
     			// alert(postId);
     			
     			$.ajax({
-    				type:'GET'
-    				, url:'/like/' + postId
+    				//type:'GET' // 생략 가능
+    				url:'/like/' + postId // data 필요 없음
     				, success:function(data) {
     					if(data.code == 200) {
     						// 성공
-    						alert(data.result);
+    						// alert(data.result);
     						location.reload(true);
     					} else if(data.code = 403) {
     						// 비로그인

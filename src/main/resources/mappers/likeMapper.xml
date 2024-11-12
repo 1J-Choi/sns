@@ -2,19 +2,47 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  <mapper namespace="com.sns.like.mapper.LikeMapper">
+ 	<!-- select -->
+ 	<!-- 
  	<select id="selectLikeByPostIdAndUserId" 
  	parameterType="map"
- 	resultType="com.sns.like.domain.Like">
+ 	resultType="int">
  		SELECT
- 			`postId`
-			, `userId`
-			, `createdAt`
+ 			COUNT(*)
 		FROM
 			`like`
 		WHERE
 			`postId` = #{postId}
 			AND `userId` = #{userId}
  	</select>
+ 	<select id="selectLikeCount" 
+ 	parameterType="int" 
+ 	resultType="int">
+ 		SELECT
+ 			COUNT(*)
+ 		FROM
+ 			`like`
+ 		WHERE
+ 			`postId` = #{postId}
+ 	</select>
+ 	 -->
+ 	 
+ 	<!-- count 쿼리를 하나로 합친다. -->
+ 	<select id="selectLikeCountByPostIdOrUserId" 
+ 	parameterType="map"
+ 	resultType="int">
+ 		SELECT
+ 			COUNT(*)
+		FROM
+			`like`
+		WHERE
+			`postId` = #{postId}
+			<if test="userId != null">
+			AND `userId` = #{userId}
+			</if>
+ 	</select>
+ 	
+ 	<!-- delete -->
  	<delete id="deleteLike" 
  	parameterType="map">
  		DELETE FROM
@@ -23,6 +51,7 @@
  			`postId` = #{postId}
 			AND `userId` = #{userId}
  	</delete>
+ 	<!-- insert -->
  	<insert id="insertLike" 
  	parameterType="map">
  		INSERT INTO `like`
@@ -38,14 +67,4 @@
  			, NOW()
  		)
  	</insert>
- 	<select id="selectLikeCount" 
- 	parameterType="int" 
- 	resultType="int">
- 		SELECT
- 			COUNT(*)
- 		FROM
- 			`like`
- 		WHERE
- 			`postId` = #{postId}
- 	</select>
  </mapper>
