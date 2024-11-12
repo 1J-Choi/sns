@@ -47,10 +47,10 @@
 				<!-- 좋아요 -->
 				<div class="card-like m-3">
 					<a href="#" class="like-btn" th:data-post-id="${card.post.id}">
-						<img src="https://www.iconninja.com/files/214/518/441/heart-icon.png" width="18" height="18" alt="empty heart">
-						<img src="https://www.iconninja.com/files/527/809/128/heart-icon.png" width="18" height="18" alt="full heart" class="d-none">
+						<img src="https://www.iconninja.com/files/214/518/441/heart-icon.png" width="18" height="18" alt="empty heart" th:unless="${card.filledLike}">
+						<img src="https://www.iconninja.com/files/527/809/128/heart-icon.png" width="18" height="18" alt="full heart" th:if="${card.filledLike}">
 					</a>
-					<span>좋아요 13개</span>
+					<span th:text="${card.likeCount}">좋아요</span>
 				</div>
 				
 				<!-- 글 -->
@@ -73,7 +73,7 @@
 							<span th:text="${commentDTO.comment.content}">댓글 내용임</span>
 							
 							<!-- 댓글 삭제(자신의 댓글만 가능) -->
-							<a href="#" class="comment-del-btn" th:if="${session.userId} == ${commentDTO.comment.userId}">
+							<a href="#" class="comment-del-btn" th:if="${session.userId} == ${commentDTO.comment.userId}" th:data-comment-id="${commentDTO.comment.id}">
 								<img src="https://www.iconninja.com/files/603/22/506/x-icon.png" width="10" height="10">
 							</a>
 						</div>
@@ -157,7 +157,6 @@
     				// response
     				, success:function(data) {
     					if(data.code == 200) {
-    						alert('글 게시 성공!');
     						location.href = location.href;
     					} else {
     						alert(data.error_message);
@@ -196,8 +195,7 @@
     				, success:function(data) {
     					if(data.code == 200) {
     						// 성공
-    						alert('댓글 등록 완료');
-    						location.href = location.href;
+    						location.reload(true);
     					} else if(data.code = 403) {
     						// 비로그인
     						alert(data.error_message);
@@ -218,6 +216,28 @@
     			e.preventDefault();
     			let postId = $(this).data('post-id');
     			// alert(postId);
+    			
+    			$.ajax({
+    				type:'GET'
+    				, url:'/like/' + postId
+    				, success:function(data) {
+    					if(data.code == 200) {
+    						// 성공
+    						alert(data.result);
+    						location.reload(true);
+    					} else if(data.code = 403) {
+    						// 비로그인
+    						alert(data.error_message);
+    						location.href = '/user/sign-in-view';
+    					} else {
+    						// 실패
+    						alert(data.error_message);
+    					}
+    				}
+    				, error:function(e) {
+    					alert('좋아요 기능 중 오류가 발생하였습니다.');
+    				}
+    			});
     		});
     		
     		// 댓글 삭제
@@ -225,6 +245,27 @@
     			e.preventDefault();
     			let commentId = $(this).data('comment-id');
     			// alert(commentId);
+    			
+    			$.ajax({
+    				type:"DELETE"
+    				, url:'/comment/delete'
+    				, data:{
+    					'commentId':commentId
+    				}
+    				, success:function(data) {
+    					if(data.code == 200) {
+    						location.href = location.href;
+    					} else if(data.code = 403) {
+    						alert(data.error_message);
+    						location.href = '/user/sign-in-view';
+    					} else {
+    						alert(data.error_message);
+    					}
+    				}
+    				, error:function(e) {
+    					alert('댓글 삭제중 오류가 발생했습니다.');
+    				}
+    			});
     		});
     	});
     </script>

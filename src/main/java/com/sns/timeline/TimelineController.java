@@ -15,6 +15,7 @@ import com.sns.timeline.bo.TimelineBO;
 import com.sns.timeline.domain.CardDTO;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -23,8 +24,9 @@ public class TimelineController {
 	private final TimelineBO timelineBO;
 	
 	@GetMapping("/timeline")
-	public String timeline(Model model) {
-		List<CardDTO> cardList = timelineBO.generateCardList();
+	public String timeline(Model model, 
+			HttpSession session) {
+		List<CardDTO> cardList = timelineBO.generateCardList((int) session.getAttribute("userId"));
 		model.addAttribute("cardList", cardList);
 		
 		return "timeline/timeline";

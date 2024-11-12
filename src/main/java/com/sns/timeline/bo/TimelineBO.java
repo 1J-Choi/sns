@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.sns.comment.bo.CommentBO;
+import com.sns.like.bo.LikeBO;
 import com.sns.post.bo.PostBO;
 import com.sns.post.entity.PostEntity;
 import com.sns.timeline.domain.CardDTO;
@@ -20,10 +21,11 @@ public class TimelineBO {
 	private final PostBO postBO;
 	private final UserBO userBO;
 	private final CommentBO commentBO;
+	private final LikeBO likeBO;
 	
 	// input: X
 	// output: List<CardDTO>
-	public List<CardDTO> generateCardList() {
+	public List<CardDTO> generateCardList(int userId) {
 		List<CardDTO> cardList = new ArrayList<>();
 		
 		// 글 목록 가져옴
@@ -35,6 +37,8 @@ public class TimelineBO {
 			card.setPost(post);
 			card.setUser(userBO.getUserEntityById(post.getUserId()));
 			card.setCommentDTOList(commentBO.generateCommentList(post.getId()));
+			card.setLikeCount(likeBO.getLikeCount(post.getId()));
+			card.setFilledLike(likeBO.getFilledLike(post.getId(), userId));
 			cardList.add(card);
 		}
 		
