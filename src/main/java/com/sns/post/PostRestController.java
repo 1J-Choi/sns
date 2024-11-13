@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +17,7 @@ import com.sns.post.entity.PostEntity;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
+@RequestMapping("/post")
 public class PostRestController {
 	@Autowired
 	private PostBO postBO;
@@ -27,7 +29,7 @@ public class PostRestController {
 	 * @param session
 	 * @return
 	 */
-	@PostMapping("/timeline/create-post")
+	@PostMapping("/create")
 	public Map<String, Object> createPost(
 			@RequestParam(value = "content", required = false) String content,
 			@RequestParam("file") MultipartFile file,
@@ -57,6 +59,23 @@ public class PostRestController {
 			result.put("code", 500);
 			result.put("result", "글 게시 도중 문제가 발생하였습니다.");
 		}
+		return result;
+	}
+	
+	@DeleteMapping("/delete")
+	public Map<String, Object> deletePost(
+			@RequestParam("postId") int postId, 
+			HttpSession session) {
+		// session으로 부터 userId 받아오기
+		int userId = (int) session.getAttribute("userId");
+		
+		// DB delete
+		postBO.deletePost(postId, userId);
+		
+		// 응답값
+		Map<String, Object> result = new HashMap<>();
+		result.put("code", 200);
+		result.put("result", "성공");
 		return result;
 	}
 }
