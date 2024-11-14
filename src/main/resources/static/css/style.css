@@ -1,4 +1,9 @@
 @charset "UTF-8";
+a, a:hover {
+	color: #000;
+	text-decoration: none;
+}
+
 header {
 	height: 70px;
 	background-color:#52BEE0;

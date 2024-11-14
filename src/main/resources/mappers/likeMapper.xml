@@ -49,7 +49,9 @@
  			`like`
  		WHERE
  			`postId` = #{postId}
+ 			<if test = "userId != null">
 			AND `userId` = #{userId}
+ 			</if>
  	</delete>
  	<!-- insert -->
  	<insert id="insertLike" 

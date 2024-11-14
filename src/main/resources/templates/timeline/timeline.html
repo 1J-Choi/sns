@@ -34,7 +34,8 @@
 					<span class="font-weight-bold" th:text="${card.user.name}">글쓴이</span>
 					
 					<!-- 더보기 ...(로그인 된 사람과 글쓴이 정보 일치할 때 보이게) -->
-					<a href="#" class="more-btn" th:if="${session.userId} == ${card.post.userId}">
+					<a href="#" class="more-btn" th:if="${session.userId} == ${card.post.userId}" data-toggle="modal" data-target="#modal" 
+					th:data-post-id="${card.post.id}">
 						<img src="https://www.iconninja.com/files/860/824/939/more-icon.png" width="30">
 					</a>
 				</div>
@@ -88,6 +89,21 @@
 				</div> <!-- 댓글 끝 -->
 			</div> <!-- 카드 끝 -->
 		</div> <!-- 타임라인 박스 끝 -->
+		<!-- Modal: 타임리프 레이아웃 때문에 section(fragment) 태그 안쪽에 위치 -->
+		<div class="modal fade" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<!-- modal-small: 작은 모달창 -->
+		<!-- modal-dialog-centered: 수직 기준 가운데 -->
+		  <div class="modal-dialog modal-sm modal-dialog-centered">
+		    <div class="modal-content text-center">
+		    	<div class="py-3">
+		    		<a href="#" id="postDelBtn">삭 제 하 기</a>
+		    	</div>
+		    	<div class="py-3 border-top">
+		    		<a href="#" data-dismiss="modal">취 소</a>
+		    	</div>
+		    </div>
+		  </div>
+		</div>
 	</div> <!-- 컨텐츠 박스 끝 -->
 </section>
 
@@ -265,6 +281,44 @@
     				}
     				, error:function(e) {
     					alert('댓글 삭제중 오류가 발생했습니다.');
+    				}
+    			});
+    		});
+    		
+    		// 더보기 ... 클릭 => 1) 모달 뜸 2) postId를 modal에 껴넣기
+    		$('.more-btn').on('click', function() {
+    			let postId = $(this).data('post-id'); // get
+    			// alert(postId);
+    			
+    			// 1개만 존재하는 modal을 재활용하기 위히
+    			// modal에 data-post-id를 심어놓는다.
+    			$('#modal').data('post-id', postId); // set
+    		});
+    		
+    		$('#postDelBtn').on('click', function(e) {
+    			e.preventDefault();
+    			let postId = $('#modal').data('post-id');
+    			// alert(postId);
+    			
+    			$.ajax({
+    				type:'DELETE'
+    				, url:'/post/delete'
+    				, data:{
+    					'postId':postId
+    				}
+    				, success:function(data) {
+    					if (data.code == 200) {
+    						alert('삭제 완료!');
+    						location.href = location.href;
+    					} else if (data.code == 403) {
+    						alert(data.error_message);
+    						location.href = '/user/sign-in-view';
+    					} else {
+    						alert(data.error_message);
+    					}
+    				}
+    				, error:function(e) {
+    					alert('post를 삭제하는데 실패하였습니다.');
     				}
     			});
     		});

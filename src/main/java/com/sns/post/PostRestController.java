@@ -67,13 +67,18 @@ public class PostRestController {
 			@RequestParam("postId") int postId, 
 			HttpSession session) {
 		// session으로 부터 userId 받아오기
-		int userId = (int) session.getAttribute("userId");
+		Integer userId = (Integer) session.getAttribute("userId");
+		Map<String, Object> result = new HashMap<>();
+		if(userId == null) {
+			result.put("code", 403);
+			result.put("error_message", "로그인을 해야만 글을 삭제할 수 있습니다.");
+			return result;
+		}
 		
 		// DB delete
 		postBO.deletePost(postId, userId);
 		
 		// 응답값
-		Map<String, Object> result = new HashMap<>();
 		result.put("code", 200);
 		result.put("result", "성공");
 		return result;

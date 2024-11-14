@@ -9,7 +9,10 @@ import java.nio.file.Paths;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Component // Spring bean에 올려야하는데 애매할 때 쓰는 어노테이션
+@Slf4j
 public class FileManagerService {
 	// 실제 업로드 된 이미지가 저장될 서버 경로
 	public static final String FILE_UPLOAD_PATH = "C:\\Users\\최원제\\Desktop\\WJ\\공부\\코딩\\백엔드\\학원\\신보람\\6_spring_project\\sns\\sns_workspace\\images/";
@@ -44,5 +47,32 @@ public class FileManagerService {
 			// 주소는 이렇게 될 것이다.(예언)
 			// 		/images/aaaa_17237482334/sun.png
 			return "/images/" + directoryName + "/" + file.getOriginalFilename();
+		}
+		
+		public void deleteFile(String image) {
+			Path path = Paths.get(FILE_UPLOAD_PATH + image.replace("/images/", ""));
+			
+			// 삭제할 이미지가 있는가?
+			if(Files.exists(path)) {
+				// 이미지 파일 삭제
+				try {
+					Files.delete(path);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					log.info("[#####파일매니저 파일 삭제#####] imagePath:{}", image);
+					return; // 이미지 파일에 실패하였으므로 폴더 실패 생략
+				}
+				
+				// 폴더(directory) 삭제
+				path = path.getParent(); // 부모 요소로 이동 => directory
+				if(Files.exists(path)) {
+					try {
+						Files.delete(path);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						log.info("[#####파일매니저 directory 삭제#####] imagePath:{}", image);
+					}
+				}
+			}
 		}
 }

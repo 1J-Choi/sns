@@ -20,7 +20,7 @@ public interface LikeMapper {
 	
 	public int deleteLike(
 			@Param("postId") int postId, 
-			@Param("userId") int userId);
+			@Param("userId") Integer userId);
 	public int insertLike(
 			@Param("postId") int postId, 
 			@Param("userId") int userId);
