@@ -63,4 +63,5 @@ public class PostBO {
 		// 해당 글 삭제
 		postRepository.delete(post); // 엔티티를 넘기지만 id(pk)로 삭제함
 	}
+	// 테스트 이슈 주석
 }
